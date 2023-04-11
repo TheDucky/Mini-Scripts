@@ -23,7 +23,7 @@ TIME=$(whiptail --title "Spotify Sleep Timer" \
 		"1 hour"  "      " OFF 3>&1 1>&2 2>&3)
 
 if [[ $TIME == "5 mins" ]]; then
-	TIMEINSECONDS=10
+	TIMEINSECONDS=300
 elif [[ $TIME == "10 mins" ]]; then
 	TIMEINSECONDS=600
 elif [[ $TIME == "15 mins" ]]; then
