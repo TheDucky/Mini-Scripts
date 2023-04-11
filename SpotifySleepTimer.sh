@@ -1,12 +1,17 @@
 #! /bin/bash
 
 dbusPauseTrack() {
-	dbus-send \
-    --print-reply \
+	dbus-send --print-reply \
     --dest=org.mpris.MediaPlayer2.spotify \
     /org/mpris/MediaPlayer2 \
     org.mpris.MediaPlayer2.Player.PlayPause
 }
+
+if (whiptail --title "Spotify Sleep Timer" --yesno "Would you like to POWEROFF after timer goes off?" 20 60 8) then
+	POSTDBUSACTION=0
+else
+	POSTDBUSACTION=1
+fi
 
 TIME=$(whiptail --title "Spotify Sleep Timer" \
 		--radiolist "Choose sleep time:" 20 60 8 \
@@ -18,7 +23,7 @@ TIME=$(whiptail --title "Spotify Sleep Timer" \
 		"1 hour"  "      " OFF 3>&1 1>&2 2>&3)
 
 if [[ $TIME == "5 mins" ]]; then
-	TIMEINSECONDS=300
+	TIMEINSECONDS=10
 elif [[ $TIME == "10 mins" ]]; then
 	TIMEINSECONDS=600
 elif [[ $TIME == "15 mins" ]]; then
@@ -46,4 +51,9 @@ STARTTIME=$TIMEINSECONDS
 
 dbusPauseTrack > /dev/null 2>&1
 
-whiptail --title "Spotify Sleep Timer" --msgbox "Sleep tight ^_^" 8 60
+if [[ $POSTDBUSACTION -eq 0 ]]; then
+	sleep 5
+	systemctl poweroff
+else
+	whiptail --title "Spotify Sleep Timer" --msgbox "Sleep tight ^_^" 8 60
+fi
